@@ -25,6 +25,12 @@ Monitoring software
 mkdir -p %{buildroot}/usr/share/upsilon-custodian/
 cp src/* %{buildroot}/usr/share/upsilon-custodian/
 
+mkdir -p %{buildroot}/etc/upsilon-custodian/
+
+mkdir -p %{buildroot}/usr/lib/systemd/system/
+cp var/pkg/upsilon-custodian.service %{buildroot}/usr/lib/systemd/system/
+
 %files
 /usr/share/upsilon-custodian/*
+/etc/upsilon-custodian/
 
