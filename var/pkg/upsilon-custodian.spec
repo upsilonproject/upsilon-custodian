@@ -4,6 +4,7 @@ Name:		upsilon-custodian
 Version:	%{version_formatted_short}
 Release:	%{timestamp}.%{?dist}
 Summary:	Monitoring software
+BuildArch: 	noarch
 
 Group:		Applications/System
 License:	GPLv2
