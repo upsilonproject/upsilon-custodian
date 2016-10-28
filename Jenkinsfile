@@ -36,8 +36,10 @@ node {
 	stage("Build") {
 		deleteDir()
 
+		prepareEnv()
+
 		checkout scm
-		sh 'make.sh'	
+		sh './make.sh'	
 
 		archive 'build/distributions/**'
 
