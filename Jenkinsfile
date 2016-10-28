@@ -40,9 +40,7 @@ node {
 	}
 
 	stage("Build") {
-		def gradle = tool 'gradle'
-
-		sh "${gradle}/bin/gradle distZip distTar"
+		sh 'make.sh'	
 
 		archive 'build/distributions/**'
 
