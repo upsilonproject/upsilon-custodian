@@ -33,13 +33,10 @@ def buildRpm(dist) {
 }                                                                                  
 
 node {
-	stage("Prep") {
+	stage("Build") {
 		deleteDir()
 
 		checkout scm
-	}
-
-	stage("Build") {
 		sh 'make.sh'	
 
 		archive 'build/distributions/**'
