@@ -1,0 +1,6 @@
+.buildid*
+**/config.cfg
+**/*.pyc
+**/*.swo
+**/*.swp
+*.zip
