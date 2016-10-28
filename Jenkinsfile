@@ -36,8 +36,6 @@ node {
 	stage("Build") {
 		deleteDir()
 
-		prepareEnv()
-
 		checkout scm
 		sh './make.sh'	
 
