@@ -24,7 +24,7 @@ def prepareEnv() {
 def buildRpm(dist) {                                                               
     prepareEnv()                                                                   
                                                                                     
-    sh 'unzip -jo SOURCES/upsilon-custodian.zip "upsilon-custodian-*/var/pkg/upsilon-custodian.spec" "upsilon-custodian-*/.upsilon-custodian.rpmmacro" -d SPECS/'
+    sh 'unzip -jo SOURCES/upsilon-custodian.zip "upsilon-custodian-*/var/pkg/upsilon-custodian.spec" "upsilon-custodian-*/.buildid.rpmmacro" -d SPECS/'
     sh "find ${env.WORKSPACE}"                                                     
                                                                                    
     sh "rpmbuild -ba SPECS/upsilon-custodian.spec --define '_topdir ${env.WORKSPACE}' --define 'dist ${dist}'"
