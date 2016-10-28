@@ -33,7 +33,23 @@ class MessageHandler():
 		self.mysql = mysqlConnection
 
 	def onMessage(self, channel, method, properties, body):
-		print "Got message", method, properties, body
+		global config 
+		msgType = properties.headers['upsilon-msg-type']
+
+		if msgType == "GET_ITEM":
+			print "Got message", method, properties, body
+
+			itemBody = "[]";
+
+			channel.basic_publish(exchange = config.exchange, routing_key = 'upsilon.custodian.gets', properties = pika.BasicProperties(
+				reply_to = method.delivery_tag
+			), body = itemBody)
+
+		elif msgType == "GET_LIST":
+			print "Got message", method, properties, body
+		else: 
+			print "UNSUPPORTED MESSAGE", msgType
+
 		channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 
 def on_timeout():
@@ -51,12 +67,13 @@ channel.queue_bind(queue = config.amqpQueue, exchange = config.amqpExchange, rou
 channel.queue_bind(queue = config.amqpQueue, exchange = config.amqpExchange, routing_key = '#');
 channel.queue_bind(queue = config.amqpQueue, exchange = config.amqpExchange, routing_key = '*');
 
-channel.start_consuming()
-
 mysqlConnection = _mysql.connect(user=config.dbUser)
 
 messageHandler = MessageHandler(amqpConnection, mysqlConnection)
 
 channel.basic_consume(messageHandler.onMessage, queue = config.amqpQueue)
 
-amqpConnection.ioloop.start();
+try:
+	channel.start_consuming()
+except KeyboardInterrupt:
+	pass
