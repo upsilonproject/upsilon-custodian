@@ -9,7 +9,7 @@ argParser = argparse.ArgumentParser();
 args = argParser.parse_args()
 
 configParser = ConfigParser.ConfigParser()
-configParser.readfp(open('defaults.cfg'))
+configParser.readfp(open('/etc/upsilon-custodian/defaults.cfg'))
 
 class RuntimeConfig:
 	dbUser = configParser.get('database', 'user')
