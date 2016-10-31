@@ -4,6 +4,7 @@ import argparse
 import ConfigParser
 import pika
 import MySQLdb
+from upsilon import amqp
 
 import yaml
 import json
@@ -35,7 +36,8 @@ class DatabaseConnection():
 	def get(self, itemType, itemId):
 		try: 
 			res = {
-				"service": self.getService
+				"service": self.getService,
+                                "node": self.getNode
 			}
 
 			res[itemType](itemId)
@@ -55,20 +57,12 @@ class DatabaseConnection():
 
 
 	def getService(self, serviceId):
-		cursor = self.conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 		query = "SELECT s.id AS serviceId, s.identifier FROM services s WHERE s.id = %s LIMIT 1"
 
-		res = cursor.execute(query, serviceId)
-
-		rows = cursor.fetchall();
-		
-		cursor.close()
-	
-		return rows
-
+                return self.execute(query, [serviceId]) 
 
 	def getNode(self, nodeId):
-		return self.execute("SELECT s.name AS nodeId, n.name FROM nodes n WHERE n.id = %s LIMIT 1", itemId)
+		return self.execute("SELECT s.name AS nodeId, n.name FROM nodes n WHERE n.id = %s LIMIT 1", [itemId])
 
 
 class MessageHandler():
@@ -79,72 +73,66 @@ class MessageHandler():
 		self.amqp = amqpConnection
 		self.database = mysqlConnection
 
-	def onMessage(self, channel, method, properties, body):
-		global config 
-		print properties.headers
-		msgType = properties.headers['upsilon-msg-type']
+	def onGetList(self, channel, method, properties, body):
+            print "Got message", method, properties, body
 
-		if msgType == "GET_ITEM":
-			print "Got message", method, properties, body
+            channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 
-			itemType = properties.headers["itemType"]
-			itemId = properties.headers["itemId"]
+        def onGetItem(self, channel, method, properties, body):
+            global config 
 
-			databaseResult = self.database.get(itemType, itemId);
+            print "Got message", method, properties, body
 
-			headers = {}
-			headers['upsilon-msg-type'] = 'GET_ITEM_RESULT'
+            itemType = properties.headers["itemType"]
+            itemId = properties.headers["itemId"]
 
-			if databaseResult == None or len(databaseResult) == 0:
-				headers['status'] = 'not-found'
-				itemBody = "not found"
-			else:
-				headers['status'] = 'found'
+            databaseResult = self.database.get(itemType, itemId);
 
-				if not "result-format" in properties.headers or properties.headers['result-format'] == "json" or properties.headers['result-format'] == "":
-					itemBody = json.dumps(databaseResult, indent = 4)
-				elif properties.headers['result-format'] == 'yaml':
-					itemBody = yaml.dump(databaseResult)
-				else:
-					headers['status'] = 'unsupported-format'
+            headers = {}
+            headers['upsilon-msg-type'] = 'GET_ITEM_RESULT'
 
-					itemBody = "UNSUPPORTED FORMAT"
+            if databaseResult == None or len(databaseResult) == 0:
+                    headers['status'] = 'not-found'
+                    itemBody = "not found"
+            else:
+                    headers['status'] = 'found'
 
-			channel.basic_publish(exchange = config.amqpExchange, routing_key = 'upsilon.custodian.results', properties = pika.BasicProperties(
-				reply_to = str(method.delivery_tag),
-				headers = headers
-			), body = itemBody)
+                    if not "result-format" in properties.headers or properties.headers['result-format'] == "json" or properties.headers['result-format'] == "":
+                            itemBody = json.dumps(databaseResult, indent = 4)
+                    elif properties.headers['result-format'] == 'yaml':
+                            itemBody = yaml.dump(databaseResult)
+                    else:
+                            headers['status'] = 'unsupported-format'
 
-			print "responding: ", itemBody
+                            itemBody = "UNSUPPORTED FORMAT"
 
-		elif msgType == "GET_LIST":
-			print "Got message", method, properties, body
-		else: 
-			print "UNSUPPORTED MESSAGE", msgType
+            channel.basic_publish(exchange = config.amqpExchange, routing_key = 'upsilon.custodian.results', properties = pika.BasicProperties(
+                    reply_to = str(method.delivery_tag),
+                    headers = headers
+            ), body = itemBody)
 
-		channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
+            print "responding: ", itemBody
+
+            channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 
 def on_timeout():
 	global amqpConnection
 	amqpConnection.close()
 
 
-print config.amqpHost
-amqpConnection = pika.BlockingConnection(pika.ConnectionParameters(host = config.amqpHost))
-print amqpConnection.is_open
- 
-channel = amqpConnection.channel();
-channel.queue_declare(queue = config.amqpQueue, durable = False, auto_delete = True)
-channel.queue_bind(queue = config.amqpQueue, exchange = config.amqpExchange, routing_key = 'upsilon.custodian.requests');
+print "connecting to:", config.amqpHost
+amqpConnection = amqp.Connection(host = config.amqpHost, queue = config.amqpQueue)
+amqpConnection.setPingReply("custodian", "development", "db, amqp")
+amqpConnection.bind('upsilon.custodian.requests');
 
 mysqlConnection = DatabaseConnection(MySQLdb.connect(user=config.dbUser, db = "upsilon"))
 mysqlConnection.get("service", 1)
 
 messageHandler = MessageHandler(amqpConnection, mysqlConnection)
-
-channel.basic_consume(messageHandler.onMessage, queue = config.amqpQueue)
+amqpConnection.addMessageTypeHandler("GET_LIST", messageHandler.onGetList)
+amqpConnection.addMessageTypeHandler("GET_ITEM", messageHandler.onGetItem)
 
 try:
-	channel.start_consuming()
+	amqpConnection.startConsuming()
 except KeyboardInterrupt:
 	pass
