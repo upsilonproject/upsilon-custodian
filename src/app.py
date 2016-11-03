@@ -33,14 +33,14 @@ class DatabaseConnection():
 	def __init__(self, conn):
 		self.conn = conn;
 
-	def get(self, itemType, itemId):
+	def get(self, itemType, itemQuery):
 		try: 
 			res = {
 				"service": self.getService,
                                 "node": self.getNode
 			}
 
-			res[itemType](itemId)
+			res[itemType](itemQuery)
 		except KeyError:
 			return []
 
@@ -62,7 +62,7 @@ class DatabaseConnection():
                 return self.execute(query, [serviceId]) 
 
 	def getNode(self, nodeId):
-		return self.execute("SELECT s.name AS nodeId, n.name FROM nodes n WHERE n.id = %s LIMIT 1", [itemId])
+		return self.execute("SELECT s.name AS nodeId, n.name FROM nodes n WHERE n.id = %s LIMIT 1", [nodeId])
 
 
 class MessageHandler():
@@ -84,9 +84,9 @@ class MessageHandler():
             print "Got message", method, properties, body
 
             itemType = properties.headers["itemType"]
-            itemId = properties.headers["itemId"]
+            itemQuery = properties.headers["itemQuery"]
 
-            databaseResult = self.database.get(itemType, itemId);
+            databaseResult = self.database.get(itemQuery, itemId);
 
             headers = {}
             headers['upsilon-msg-type'] = 'GET_ITEM_RESULT'
