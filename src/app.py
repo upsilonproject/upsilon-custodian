@@ -45,6 +45,9 @@ class DatabaseConnection():
 			return []
 
 	def execute(self, query, args):
+                print "SQL:", query
+                print "ARG:", args
+
 		cursor = self.conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
 		res = cursor.execute(query, args)
@@ -86,7 +89,7 @@ class MessageHandler():
             itemType = properties.headers["itemType"]
             itemQuery = properties.headers["itemQuery"]
 
-            databaseResult = self.database.get(itemQuery, itemId);
+            databaseResult = self.database.get(itemType, itemQuery);
 
             headers = {}
             headers['upsilon-msg-type'] = 'GET_ITEM_RESULT'
