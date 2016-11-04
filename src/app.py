@@ -40,7 +40,7 @@ class DatabaseConnection():
                                 "node": self.getNode
 			}
 
-			res[itemType](itemQuery)
+			return res[itemType](itemQuery)
 		except KeyError:
 			return []
 
@@ -55,6 +55,8 @@ class DatabaseConnection():
 		rows = cursor.fetchall();
 		
 		cursor.close()
+
+                print "RES:", len(rows)
 	
 		return rows
 
