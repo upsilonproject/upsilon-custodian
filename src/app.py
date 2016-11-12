@@ -67,7 +67,7 @@ class DatabaseConnection():
                 return self.execute(query, [serviceId]) 
 
 	def getNode(self, nodeId):
-		return self.execute("SELECT s.name AS nodeId, n.name FROM nodes n WHERE n.id = %s LIMIT 1", [nodeId])
+		return self.execute("SELECT n.id AS nodeId, n.name FROM nodes n WHERE n.id = %s LIMIT 1", [nodeId])
 
 
 class MessageHandler():
