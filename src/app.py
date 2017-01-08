@@ -128,6 +128,7 @@ def on_timeout():
 print "connecting to:", config.amqpHost
 amqpConnection = amqp.Connection(host = config.amqpHost, queue = config.amqpQueue)
 amqpConnection.setPingReply("upsilon-custodian", "development", "db, amqp")
+amqpConnection.startHeartbeater()
 amqpConnection.bind('upsilon.custodian.requests');
 
 mysqlConnection = DatabaseConnection(MySQLdb.connect(user=config.dbUser, db = "upsilon"))
