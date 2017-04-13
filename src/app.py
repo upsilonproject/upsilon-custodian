@@ -9,6 +9,8 @@ import datetime
 
 import yaml
 import json
+import sys
+import time
 
 argParser = argparse.ArgumentParser();
 args = argParser.parse_args()
@@ -132,19 +134,31 @@ def on_timeout():
 	amqpConnection.close()
 
 
-print "connecting to:", config.amqpHost
-amqpConnection = amqp.Connection(host = config.amqpHost, queue = config.amqpQueue)
-amqpConnection.setPingReply("custodian", "development", "db, amqp")
-amqpConnection.bind('upsilon.custodian.requests');
+while True:
+    print "Connecting to:", config.amqpHost
+    try:
+        amqpConnection = amqp.Connection(host = config.amqpHost, queue = config.amqpQueue)
+        amqpConnection.setPingReply("upsilon-custodian", "development", "db, amqp")
+        amqpConnection.startHeartbeater()
+        amqpConnection.bind('upsilon.custodian.requests');
 
-mysqlConnection = DatabaseConnection(MySQLdb.connect(user=config.dbUser, db = "upsilon"))
-mysqlConnection.get("service", 1)
+        mysqlConnection = DatabaseConnection(MySQLdb.connect(user=config.dbUser, db = "upsilon", connect_timeout = 5))
+        mysqlConnection.get("service", 1)
 
-messageHandler = MessageHandler(amqpConnection, mysqlConnection)
-amqpConnection.addMessageTypeHandler("GET_LIST", messageHandler.onGetList)
-amqpConnection.addMessageTypeHandler("GET_ITEM", messageHandler.onGetItem)
+        messageHandler = MessageHandler(amqpConnection, mysqlConnection)
+        amqpConnection.addMessageTypeHandler("GET_LIST", messageHandler.onGetList)
+        amqpConnection.addMessageTypeHandler("GET_ITEM", messageHandler.onGetItem)
 
-try:
-	amqpConnection.startConsuming()
-except KeyboardInterrupt:
-	pass
+        print "Connected, consuming"
+
+        amqpConnection.startConsuming()
+    except KeyboardInterrupt:
+        print "Ctrl C"
+        amqpConnection.close();
+        mysqlConnection.conn.close();
+
+        sys.exit(0)
+    except Exception as e: 
+        print "Exception in connection", e 
+
+    time.sleep(5);

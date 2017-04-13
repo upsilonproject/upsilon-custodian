@@ -26,11 +26,12 @@ mkdir -p %{buildroot}/usr/share/upsilon-custodian/
 cp src/* %{buildroot}/usr/share/upsilon-custodian/
 
 mkdir -p %{buildroot}/etc/upsilon-custodian/
+cp etc/* %{buildroot}/etc/upsilon-custodian/
 
 mkdir -p %{buildroot}/usr/lib/systemd/system/
 cp var/upsilon-custodian.service %{buildroot}/usr/lib/systemd/system/
 
 %files
 /usr/share/upsilon-custodian/*
-/etc/upsilon-custodian/
+/etc/upsilon-custodian/*
 /usr/lib/systemd/system/upsilon-custodian.service
