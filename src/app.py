@@ -5,6 +5,7 @@ import ConfigParser
 import pika
 import MySQLdb
 from upsilon import amqp
+import datetime
 
 import yaml
 import json
@@ -103,7 +104,7 @@ class MessageHandler():
                     headers['status'] = 'found'
 
                     if not "result-format" in properties.headers or properties.headers['result-format'] == "json" or properties.headers['result-format'] == "":
-                            itemBody = json.dumps(databaseResult, indent = 4)
+                            itemBody = json.dumps(databaseResult, indent = 4, default=self.dumpDefault)
                     elif properties.headers['result-format'] == 'yaml':
                             itemBody = yaml.dump(databaseResult)
                     else:
@@ -119,6 +120,12 @@ class MessageHandler():
             print "responding: ", itemBody
 
             channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
+
+	def dumpDefault(self, obj):
+			if type(obj) == datetime.datetime:
+				return str(obj)
+
+			return str(obj)
 
 def on_timeout():
 	global amqpConnection
