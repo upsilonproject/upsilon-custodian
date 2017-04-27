@@ -9,14 +9,25 @@ class DatabaseConnection():
         try: 
             res = {
                 "service": self.getService,
-                                "node": self.getNode
+                "node": self.getNode
             }
 
             return res[itemType](itemQuery)
         except KeyError:
             return []
 
-    def execute(self, query, args):
+    def list(self, itemType):
+        try: 
+            res = {
+                "service": self.getServiceList,
+                "node": self.getNodeList
+            }
+
+            return res[itemType](itemQuery)
+        except KeyError:
+            return []
+
+    def execute(self, query, args = []):
         print "SQL:", query
         print "ARG:", args
 
@@ -42,7 +53,12 @@ class DatabaseConnection():
         return self.execute("SELECT n.id AS nodeId, n.identifier, n.serviceType, n.lastUpdated, n.instanceApplicationVersion FROM nodes n WHERE n.id = %s LIMIT 1", [nodeId])
 
 
+    def getServiceList(self):
+        query = "SELECT s.id AS id, s.identifier, s.status FROM services s"
+
+        return self.execute(query)
+
     def getNodeList(self):
         query = "SELECT n.id AS nodeId, n.identifier, n.serviceType, n.instanceApplicationVersion FROM nodes n "
 
-        return self.execute(query, [])
+        return self.execute(query)

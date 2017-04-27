@@ -18,7 +18,7 @@ class MessageHandler():
 
         itemType = properties.headers["itemType"]
 
-        databaseResult = self.database.getNodeList();
+        databaseResult = self.database.list(itemType);
 
         headers = {}
         headers['upsilon-msg-type'] = 'GET_LIST_RESULT'
