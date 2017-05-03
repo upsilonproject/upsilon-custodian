@@ -62,3 +62,13 @@ class DatabaseConnection():
         query = "SELECT n.id AS nodeId, n.identifier, n.serviceType, n.instanceApplicationVersion FROM nodes n "
 
         return self.execute(query)
+
+    def addServiceCheckResult(self, scr):
+        query = "INSERT INTO service_check_results (node, service, karma, output, checked) VALUES (%s, %s, %s, %s, now()) "
+
+        return self.execute(query, [
+            scr.nodeIdentifier,
+            scr.identifier,
+            scr.karma,
+            scr.body
+        ])

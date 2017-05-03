@@ -2,6 +2,7 @@ import json
 import yaml
 import pika
 from upsilon import logger
+from structures import ServiceCheckResult
 
 class MessageHandler():
     amqp = None
@@ -70,6 +71,18 @@ class MessageHandler():
         print "responding: ", itemBody
 
         channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
+
+    def onHeartbeat(self, channel, method, properties, body):
+        pass       
+
+    def onServiceCheckResult(self, channel, method, properties, body):
+        serviceCheckResult = ServiceCheckResult()
+        serviceCheckResult.nodeIdentifier = properties.headers["node-identifier"]
+        serviceCheckResult.identifier = properties.headers["identifier"]
+        serviceCheckResult.karma = properties.headers["karma"]
+        serviceCheckResult.body = str(body)
+
+        self.database.addServiceCheckResult(serviceCheckResult)
 
     def dumpDefault(self, obj):
             if type(obj) == datetime.datetime:

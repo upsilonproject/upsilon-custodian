@@ -29,6 +29,7 @@ while True:
         amqpConnection.setPingReply("upsilon-custodian", "development", "db, amqp")
         amqpConnection.startHeartbeater()
         amqpConnection.bind('upsilon.custodian.requests');
+        amqpConnection.bind('upsilon.node.serviceresults');
 
         mysqlConnection = DatabaseConnection(MySQLdb.connect(user=config.dbUser, db = "upsilon", connect_timeout = 5))
         mysqlConnection.get("service", 1)
@@ -36,6 +37,8 @@ while True:
         messageHandler = MessageHandler(amqpConnection, mysqlConnection, config)
         amqpConnection.addMessageTypeHandler("GET_LIST", messageHandler.onGetList)
         amqpConnection.addMessageTypeHandler("GET_ITEM", messageHandler.onGetItem)
+        amqpConnection.addMessageTypeHandler("HEARTBEAT", messageHandler.onHeartbeat)
+        amqpConnection.addMessageTypeHandler("SERVICE_CHECK_RESULT", messageHandler.onServiceCheckResult)
 
         print "Connected, consuming"
 
@@ -48,7 +51,7 @@ while True:
             amqpConnection.close();
             mysqlConnection.conn.close();
         except Exception as e:
-            print "exception in exception ahndler", str(e)
+            print "exception in exception handler", str(e)
 
         sys.exit(0)
     except Exception as e: 
