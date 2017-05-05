@@ -4,3 +4,9 @@ class ServiceCheckResult():
     karma = ""
     body = ""
 
+class Heartbeat():
+    identifier = ""
+    serviceType = ""
+    serviceCount = ""
+    configs = ""
+    instanceApplicationVersion = ""

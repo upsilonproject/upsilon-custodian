@@ -2,7 +2,7 @@ import json
 import yaml
 import pika
 from upsilon import logger
-from structures import ServiceCheckResult
+from structures import ServiceCheckResult, Heartbeat
 
 class MessageHandler():
     amqp = None
@@ -73,7 +73,16 @@ class MessageHandler():
         channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 
     def onHeartbeat(self, channel, method, properties, body):
-        pass       
+        hb = Heartbeat()
+        hb.identifier = properties.headers['node-identifier']
+        hb.serviceType = "?"
+        hb.serviceCount = properties.headers['node-service-count']
+        hb.configs = properties.headers['node-configs']
+        hb.instanceApplicationVersion = properties.headers['node-version']
+
+        self.database.addHeartbeat(hb)
+
+        channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 
     def onServiceCheckResult(self, channel, method, properties, body):
         serviceCheckResult = ServiceCheckResult()
@@ -83,6 +92,8 @@ class MessageHandler():
         serviceCheckResult.body = str(body)
 
         self.database.addServiceCheckResult(serviceCheckResult)
+        
+        channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 
     def dumpDefault(self, obj):
             if type(obj) == datetime.datetime:

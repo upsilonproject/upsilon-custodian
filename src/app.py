@@ -30,6 +30,7 @@ while True:
         amqpConnection.startHeartbeater()
         amqpConnection.bind('upsilon.custodian.requests');
         amqpConnection.bind('upsilon.node.serviceresults');
+        amqpConnection.bind('upsilon.node.heartbeats');
 
         mysqlConnection = DatabaseConnection(MySQLdb.connect(user=config.dbUser, db = "upsilon", connect_timeout = 5))
         mysqlConnection.get("service", 1)
