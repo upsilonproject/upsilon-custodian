@@ -76,9 +76,13 @@ class MessageHandler():
         hb = Heartbeat()
         hb.identifier = properties.headers['node-identifier']
         hb.serviceType = "?"
-        hb.serviceCount = properties.headers['node-service-count']
         hb.configs = properties.headers['node-configs']
         hb.instanceApplicationVersion = properties.headers['node-version']
+
+        if "node-service-count" in properties.headers:
+            hb.serviceCount = properties.headers['node-service-count']
+        else: 
+            hb.serviceCount = 0
 
         self.database.addHeartbeat(hb)
 
