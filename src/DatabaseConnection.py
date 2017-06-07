@@ -82,7 +82,7 @@ class DatabaseConnection():
 
         self.execute(query, [
             scr.nodeIdentifier,
-            scr.identifier
+            scr.identifier,
             scr.karma,
             scr.body
         ])
