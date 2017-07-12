@@ -24,7 +24,7 @@ Monitoring software
 %build
 mkdir -p %{buildroot}/usr/share/upsilon-custodian/
 cp src/* %{buildroot}/usr/share/upsilon-custodian/
-chmod %{buildroot}/usr/share/upsilon-custodian/app.py
+chmod +x %{buildroot}/usr/share/upsilon-custodian/app.py
 
 mkdir -p %{buildroot}/etc/upsilon-custodian/
 cp etc/* %{buildroot}/etc/upsilon-custodian/

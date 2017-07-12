@@ -21,6 +21,27 @@ def prepareEnv() {
 	sh "cp build/distributions/*.zip SOURCES/upsilon-custodian.zip"
 }
 
+def buildDockerContainer() {
+	prepareEnv()
+
+	unstash 'el7'
+	sh 'mv RPMS/noarch/*.rpm RPMS/noarch/upsilon-custodian.rpm'
+
+	sh 'unzip -jo SOURCES/upsilon-custodian.zip "upsilon-custodian-*/var/pkg/Dockerfile" "upsilon-custodian-*/.buildid" -d . '
+
+	tag = sh script: 'buildid -pk tag', returnStdout: true
+
+	println "tag: ${tag}"
+
+	sh "docker build -t 'upsilonproject/drone:${tag}' ."
+	sh "docker save upsilonproject/drone:${tag} > upsilon-drone-docker-${tag}.tgz"
+
+	archive "upsilon-drone-docker-${tag}.tgz"
+}
+ 
+
+
+
 def buildRpm(dist) {                                                               
     prepareEnv()                                                                   
                                                                                     
@@ -47,5 +68,6 @@ node {
 	stage("Package") {
 		buildRpm("el7")
 		buildRpm("el6")
+		buildDockerContainer()
 	}
 }
