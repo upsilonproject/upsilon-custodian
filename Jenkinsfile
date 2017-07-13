@@ -51,6 +51,7 @@ def buildRpm(dist) {
     sh "rpmbuild -ba SPECS/upsilon-custodian.spec --define '_topdir ${env.WORKSPACE}' --define 'dist ${dist}'"
                                                                                    
     archive 'RPMS/noarch/*.rpm'                                                    
+	stash "${dist}"
 }                                                                                  
 
 node {
