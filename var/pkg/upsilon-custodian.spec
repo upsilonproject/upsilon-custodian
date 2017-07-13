@@ -12,7 +12,7 @@ URL:		http://upsilon-project.co.uk
 Source0:	upsilon-custodian.zip
 
 BuildRequires:	python
-Requires:	python, upsilon-pycommon
+Requires:	python upsilon-pycommon python-pika
 
 %description
 Monitoring software
