@@ -33,10 +33,10 @@ def buildDockerContainer() {
 
 	println "tag: ${tag}"
 
-	sh "docker build -t 'upsilonproject/drone:${tag}' ."
-	sh "docker save upsilonproject/drone:${tag} > upsilon-drone-docker-${tag}.tgz"
+	sh "docker build -t 'upsilonproject/custodian:${tag}' ."
+	sh "docker save upsilonproject/custodian:${tag} > upsilon-custodian-docker-${tag}.tgz"
 
-	archive "upsilon-drone-docker-${tag}.tgz"
+	archive "upsilon-custodian-docker-${tag}.tgz"
 }
  
 
