@@ -11,6 +11,7 @@ from RuntimeConfig import RuntimeConfig
 
 import sys
 import time
+from time import sleep
 
 argParser = argparse.ArgumentParser();
 args = argParser.parse_args()
@@ -56,5 +57,7 @@ while True:
         sys.exit(0)
     except Exception as e: 
         print "Exception in connection", e 
+
+    sleep(20)
 
 logger.info("Exited?")
