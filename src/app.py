@@ -58,6 +58,17 @@ while True:
     except Exception as e: 
         print "Exception in connection", e 
 
+        try: 
+          amqlConnection.close()
+        except:
+          pass
+
+        try:
+          mysqlConnection.conn.close()
+        except:
+          pass
+
+
     sleep(20)
 
 logger.info("Exited?")
