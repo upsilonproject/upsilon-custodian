@@ -4,13 +4,14 @@ configParser = ConfigParser.ConfigParser()
 configParser.readfp(open('/etc/upsilon-custodian/defaults.cfg'))
 
 class RuntimeConfig:
-	dbUser = configParser.get('database', 'user')
-	dbPass = configParser.get('database', 'pass')
+  dbUser = configParser.get('database', 'user')
+  dbPass = configParser.get('database', 'pass')
+  dbHost = configParser.get('database', 'host')
 
-	amqpHost = configParser.get('amqp', 'host')
-	amqpExchange = configParser.get('amqp', 'exchange');
-	amqpQueue = configParser.get('amqp', 'queue');
+  amqpHost = configParser.get('amqp', 'host')
+  amqpExchange = configParser.get('amqp', 'exchange');
+  amqpQueue = configParser.get('amqp', 'queue');
 
-	def __init__(self, args):
-		self.args = args
+  def __init__(self, args):
+    self.args = args
 
