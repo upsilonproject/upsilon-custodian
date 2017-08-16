@@ -1,12 +1,11 @@
 #!groovy
 
 properties (
-     [                                                                           
-         [                                                                       
-             $class: 'jenkins.model.BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '10', artifactNumToKeepStr: '10'],
-             $class: 'CopyArtifactPermissionProperty', projectNames: '*'         
-         ]                                                                       
-     ]  
+    [                                                                           
+		 buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')),
+         [$class: 'CopyArtifactPermissionProperty', projectNames: '*'],
+         pipelineTriggers([[$class: 'PeriodicFolderTrigger', interval: '1d']])  
+	]  
 )
 
 def prepareEnv() {
@@ -34,7 +33,7 @@ def buildDockerContainer() {
 	println "tag: ${tag}"
 
 	sh "docker build -t 'upsilonproject/custodian:${tag}' ."
-	sh "docker save upsilonproject/custodian:${tag} > upsilon-custodian-docker-${tag}.tgz"
+	sh "docker save upsilonproject/custodian:${tag} | gzip > upsilon-custodian-docker-${tag}.tgz"
 
 	archive "upsilon-custodian-docker-${tag}.tgz"
 }
