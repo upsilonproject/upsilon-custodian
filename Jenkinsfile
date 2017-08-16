@@ -33,6 +33,7 @@ def buildDockerContainer() {
 	println "tag: ${tag}"
 
 	sh "docker build -t 'upsilonproject/custodian:${tag}' ."
+	sh "docker tag 'upsilonproject/custodian:${tag}' 'upsilonproject/custodian:latest' "
 	sh "docker save upsilonproject/custodian:${tag} | gzip > upsilon-custodian-docker-${tag}.tgz"
 
 	archive "upsilon-custodian-docker-${tag}.tgz"
