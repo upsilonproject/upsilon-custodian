@@ -7,6 +7,6 @@ class ServiceCheckResult():
 class Heartbeat():
     identifier = ""
     serviceType = ""
-    serviceCount = ""
+    serviceCount = 0
     configs = ""
     instanceApplicationVersion = ""
