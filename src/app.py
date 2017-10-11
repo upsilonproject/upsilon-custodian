@@ -24,7 +24,7 @@ def on_timeout():
 
 
 while True:
-    print "Connecting to:", config.amqpHost
+    logger.info("Connecting to:",  config.amqpHost)
     try:
         amqpConnection = amqp.Connection(host = config.amqpHost, queue = config.amqpQueue)
         amqpConnection.setPingReply("upsilon-custodian", "development", "db, amqp")
@@ -41,22 +41,22 @@ while True:
         amqpConnection.addMessageTypeHandler("HEARTBEAT", messageHandler.onHeartbeat)
         amqpConnection.addMessageTypeHandler("SERVICE_CHECK_RESULT", messageHandler.onServiceCheckResult)
 
-        print "Connected, consuming"
+        logger.info("Connected, consuming")
 
         amqpConnection.startConsuming()
 
         time.sleep(5);
     except KeyboardInterrupt:
-        print "Ctrl C"
+        logger.info("Ctrl C")
         try:
             amqpConnection.close();
             mysqlConnection.conn.close();
         except Exception as e:
-            print "exception in exception handler", str(e)
+            logger.error("exception in exception handler: ", e)
 
         sys.exit(0)
     except Exception as e: 
-        print "Exception in connection", e 
+        logger.error("Exception in connection: ", e)
 
         try: 
           amqlConnection.close()

@@ -28,8 +28,8 @@ class DatabaseConnection():
             return []
 
     def execute(self, query, args = []):
-        print "SQL:", query
-        print "ARG:", args
+        logger.info("SQL:", query)
+        logger.info("ARG:", args)
 
         cursor = self.conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
@@ -39,7 +39,7 @@ class DatabaseConnection():
         
         cursor.close()
 
-        print "RES:", len(rows)
+        logger.info("RES:", len(rows))
     
         return rows
 

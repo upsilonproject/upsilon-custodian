@@ -15,7 +15,7 @@ class MessageHandler():
         self.config = config
 
     def onGetList(self, channel, method, properties, body):
-        print "Got message", method, properties, body
+        logger.info("Got message", method, properties, body)
 
         itemType = properties.headers["itemType"]
 
@@ -35,10 +35,10 @@ class MessageHandler():
                 headers = headers
         ), body = itemBody)
 
-        logger.info("responding: " + itemBody)
+        logger.info("responding:", itemBody)
 
     def onGetItem(self, channel, method, properties, body):
-        print "Got message", method, properties, body
+        logger.info("Got message: ", method, properties, body)
 
         itemType = properties.headers["itemType"]
         itemQuery = properties.headers["itemQuery"]
@@ -68,7 +68,7 @@ class MessageHandler():
                 headers = headers
         ), body = itemBody)
 
-        print "responding: ", itemBody
+        logger.info("responding: ", itemBody)
 
         channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 
