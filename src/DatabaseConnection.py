@@ -64,7 +64,7 @@ class DatabaseConnection():
         return self.execute(query)
 
     def addHeartbeat(self, hb):
-        query = "INSERT INTO nodes (identifier, serviceType, lastUpdated) VALUES (%s, %s, now()) ON DUPLICATE KEY UPDATE lastUpdated = now(), serviceCount = %s, serviceType = %s, configs = %s, instanceApplicationVersion = %s "
+        query = "INSERT INTO nodes (identifier, serviceType, lastUpdated) VALUES (%s, %s, utc_timestamp()) ON DUPLICATE KEY UPDATE lastUpdated = utc_timestamp(), serviceCount = %s, serviceType = %s, configs = %s, instanceApplicationVersion = %s "
 
         params = [
             hb.identifier, 
@@ -99,7 +99,7 @@ class DatabaseConnection():
             scr.commandIdentifier
         ])
 
-        query = "INSERT INTO service_check_results (node, service, karma, output, checked) VALUES (%s, %s, %s, %s, now()) "
+        query = "INSERT INTO service_check_results (node, service, karma, output, checked) VALUES (%s, %s, %s, %s, utc_timestamp()) "
 
         return self.execute(query, [
             scr.nodeIdentifier,

@@ -12,7 +12,7 @@ URL:		http://upsilon-project.co.uk
 Source0:	upsilon-custodian.zip
 
 BuildRequires:	python
-Requires:	python, upsilon-pycommon
+Requires:	python upsilon-pycommon python-pika
 
 %description
 Monitoring software
@@ -24,6 +24,7 @@ Monitoring software
 %build
 mkdir -p %{buildroot}/usr/share/upsilon-custodian/
 cp src/* %{buildroot}/usr/share/upsilon-custodian/
+chmod +x %{buildroot}/usr/share/upsilon-custodian/app.py
 
 mkdir -p %{buildroot}/etc/upsilon-custodian/
 cp etc/* %{buildroot}/etc/upsilon-custodian/

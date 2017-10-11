@@ -11,6 +11,7 @@ from RuntimeConfig import RuntimeConfig
 
 import sys
 import time
+from time import sleep
 
 argParser = argparse.ArgumentParser();
 args = argParser.parse_args()
@@ -32,7 +33,7 @@ while True:
         amqpConnection.bind('upsilon.node.serviceresults');
         amqpConnection.bind('upsilon.node.heartbeats');
 
-        mysqlConnection = DatabaseConnection(MySQLdb.connect(user=config.dbUser, db = "upsilon", connect_timeout = 5, autocommit = True))
+        mysqlConnection = DatabaseConnection(MySQLdb.connect(host=config.dbHost, user=config.dbUser, passwd=config.dbPass, db = "upsilon", connect_timeout = 5, autocommit = True))
 
         messageHandler = MessageHandler(amqpConnection, mysqlConnection, config)
         amqpConnection.addMessageTypeHandler("GET_LIST", messageHandler.onGetList)
@@ -56,5 +57,18 @@ while True:
         sys.exit(0)
     except Exception as e: 
         print "Exception in connection", e 
+
+        try: 
+          amqlConnection.close()
+        except:
+          pass
+
+        try:
+          mysqlConnection.conn.close()
+        except:
+          pass
+
+
+    sleep(20)
 
 logger.info("Exited?")
