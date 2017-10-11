@@ -78,6 +78,27 @@ class DatabaseConnection():
         return self.execute(query, params);
 
     def addServiceCheckResult(self, scr):
+        query = "INSERT INTO services (identifier, node, description, executable, karma) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE karma = %s, secondsRemaining = %s, output = %s, commandLine = %s, lastUpdated = %s, consecutiveCount = %s, lastChanged = %s, estimatedNextCheck = %s, isLocal = %s, node = %s, commandIdentifier = %s "
+
+        self.execute(query, [
+            scr.identifier, 
+            scr.nodeIdentifier, 
+            scr.description,
+            scr.executable,
+            scr.getKarma(),
+            scr.getKarma(),
+            0,
+            scr.body,
+            scr.commandLine,
+            scr.lastUpdated,
+            scr.consequtiveCount,
+            scr.lastChanged,
+            scr.estimatedNextCheck,
+            scr.isLocal,
+            scr.nodeIdentifier,
+            scr.commandIdentifier
+        ])
+
         query = "INSERT INTO service_check_results (node, service, karma, output, checked) VALUES (%s, %s, %s, %s, now()) "
 
         return self.execute(query, [
@@ -86,3 +107,4 @@ class DatabaseConnection():
             scr.karma,
             scr.body
         ])
+
