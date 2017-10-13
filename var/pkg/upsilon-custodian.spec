@@ -34,5 +34,5 @@ cp var/upsilon-custodian.service %{buildroot}/usr/lib/systemd/system/
 
 %files
 /usr/share/upsilon-custodian/*
-/etc/upsilon-custodian/*
+%config(noreplace) /etc/upsilon-custodian/*
 /usr/lib/systemd/system/upsilon-custodian.service
