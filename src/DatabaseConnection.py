@@ -28,8 +28,8 @@ class DatabaseConnection():
             return []
 
     def execute(self, query, args = []):
-        print "SQL:", query
-        print "ARG:", args
+        logger.info("SQL:", query)
+        logger.info("ARG:", args)
 
         cursor = self.conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
 
@@ -39,7 +39,7 @@ class DatabaseConnection():
         
         cursor.close()
 
-        print "RES:", len(rows)
+        logger.info("RES:", len(rows))
     
         return rows
 
@@ -78,13 +78,23 @@ class DatabaseConnection():
         return self.execute(query, params);
 
     def addServiceCheckResult(self, scr):
-        query = "INSERT INTO services (node, identifier) VALUES (%s, %s) ON DUPLICATE KEY UPDATE karma = %s, output = %s, lastUpdated = utc_timestamp()"
+        query = "INSERT INTO services (identifier, node, description, executable, karma) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE karma = %s, output = %s, commandLine = %s, lastUpdated = %s, consecutiveCount = %s, lastChanged = %s, estimatedNextCheck = %s, node = %s, commandIdentifier = %s "
 
         self.execute(query, [
+            scr.identifier, 
+            scr.nodeIdentifier, 
+            scr.description,
+            scr.executable,
+            scr.getKarma(),
+            scr.getKarma(),
+            scr.body,
+            scr.commandLine,
+            scr.lastUpdated,
+            scr.consequtiveCount,
+            scr.lastChanged,
+            scr.estimatedNextCheck,
             scr.nodeIdentifier,
-            scr.identifier,
-            scr.karma,
-            scr.body
+            scr.commandIdentifier
         ])
 
         query = "INSERT INTO service_check_results (node, service, karma, output, checked) VALUES (%s, %s, %s, %s, utc_timestamp()) "
@@ -95,3 +105,4 @@ class DatabaseConnection():
             scr.karma,
             scr.body
         ])
+
