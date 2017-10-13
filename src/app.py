@@ -47,7 +47,8 @@ while True:
 
         time.sleep(5);
     except KeyboardInterrupt:
-        logger.info("Ctrl C")
+        logger.info("Ctrl C, will try and close connections")
+
         try:
             amqpConnection.close();
             mysqlConnection.conn.close();
