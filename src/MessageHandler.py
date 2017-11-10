@@ -77,6 +77,9 @@ class MessageHandler():
         hb.identifier = properties.headers['node-identifier']
         hb.serviceType = "?"
 
+        if "node-type" in properties.headers:
+          hb.serviceType = properties.headers["node-type"]
+
         if "node-configs" in properties.headers:
             hb.configs = properties.headers['node-configs']
 
