@@ -75,10 +75,16 @@ class MessageHandler():
     def onHeartbeat(self, channel, method, properties, body):
         hb = Heartbeat()
         hb.identifier = properties.headers['node-identifier']
-        hb.serviceType = "?"
+        nodeType = "?"
+        nodeTraits = "?"
 
         if "node-type" in properties.headers:
-          hb.serviceType = properties.headers["node-type"]
+            nodeType = properties.headers["node-type"]
+
+        if "node-traits" in properties.headers:
+            nodeTraits = properties.headers["node-traits"]
+
+        hb.serviceType = nodeType + "(" + nodeTraits + ")"
 
         if "node-configs" in properties.headers:
             hb.configs = properties.headers['node-configs']
