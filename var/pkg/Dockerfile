@@ -7,3 +7,5 @@ ADD RPMS/noarch/upsilon-custodian.rpm /opt/
 RUN yum localinstall /opt/upsilon-custodian.rpm -y
 
 ENTRYPOINT /usr/share/upsilon-custodian/app.py
+
+USER 1001
