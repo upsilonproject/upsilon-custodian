@@ -1,17 +1,18 @@
-import ConfigParser
+import configargparse
 
-configParser = ConfigParser.ConfigParser()
-configParser.readfp(open('/etc/upsilon-custodian/defaults.cfg'))
+global config
 
-class RuntimeConfig:
-  dbUser = configParser.get('database', 'user')
-  dbPass = configParser.get('database', 'pass')
-  dbHost = configParser.get('database', 'host')
+parser = configargparse.ArgParser(default_config_files=["/etc/upsilon-custodian/custodian.cfg"])
+parser.add("--dbUser")
+parser.add("--dbPass")
+parser.add("--dbName")
+parser.add("--dbHost")
+parser.add("--amqpHost")
+parser.add("--amqpExchange")
+parser.add("--amqpQueue")
+parser.add("--promPort", default = 1300);
+parser.add("--promOnly", action = 'store_true')
+config = parser.parse_args();
 
-  amqpHost = configParser.get('amqp', 'host')
-  amqpExchange = configParser.get('amqp', 'exchange');
-  amqpQueue = configParser.get('amqp', 'queue');
-
-  def __init__(self, args):
-    self.args = args
-
+def getRuntimeConfig():
+  return config

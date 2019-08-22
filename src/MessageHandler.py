@@ -4,6 +4,13 @@ import pika
 from upsilon import logger
 from structures import ServiceCheckResult, Heartbeat
 
+from prometheus_client import Counter
+
+METRIC_MSG_SERVICE_CHECK_RESULT_COUNT = Counter('custodian_msg_service_check_result_count', '')
+METRIC_MSG_GET_LIST_COUNT = Counter('custodian_msg_get_list_count', '')
+METRIC_MSG_GET_ITEM_COUNT = Counter('custodian_msg_get_item_count', '')
+METRIC_MSG_HEARTBEAT_COUNT = Counter('custodian_msg_heartbeat_count', '')
+
 class MessageHandler():
     amqp = None
     mysql = None
@@ -36,6 +43,8 @@ class MessageHandler():
         ), body = itemBody)
 
         logger.info("responding:", itemBody)
+
+        METRIC_MSG_GET_LIST_COUNT.inc();
 
     def onGetItem(self, channel, method, properties, body):
         logger.info("Got message: ", method, properties, body)
@@ -72,6 +81,8 @@ class MessageHandler():
 
         channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 
+        METRIC_MSG_GET_ITEM_COUNT.inc();
+
     def onHeartbeat(self, channel, method, properties, body):
         hb = Heartbeat()
         hb.identifier = properties.headers['node-identifier']
@@ -99,6 +110,8 @@ class MessageHandler():
 
         channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
 
+        METRIC_MSG_HEARTBEAT_COUNT.inc();
+
     def onServiceCheckResult(self, channel, method, properties, body):
         serviceCheckResult = ServiceCheckResult()
         serviceCheckResult.nodeIdentifier = properties.headers["node-identifier"]
@@ -109,6 +122,8 @@ class MessageHandler():
         self.database.addServiceCheckResult(serviceCheckResult)
         
         channel.basic_ack(delivery_tag = method.delivery_tag, multiple = False)
+
+        METRIC_MSG_SERVICE_CHECK_RESULT_COUNT.inc();
 
     def dumpDefault(self, obj):
             if type(obj) == datetime.datetime:
