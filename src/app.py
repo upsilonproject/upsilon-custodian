@@ -1,12 +1,13 @@
 #!/usr/bin/env python2
 
 import argparse
-from upsilon import amqp, logger
+from upsilon import logger
 import datetime
 import MySQLdb
 
 from MessageHandler import MessageHandler
 from DatabaseConnection import DatabaseConnection
+from AmqpConnection import AmqpConnection
 from RuntimeConfig import getRuntimeConfig
 from prometheus import startProm
 from prometheus_client import Info
@@ -33,7 +34,8 @@ def on_timeout():
 def newAmqpConnection(config):
     logger.info("Connecting to:",  config.amqpHost, config.amqpQueue)
 
-    amqpConnection = amqp.Connection(host = config.amqpHost, queue = config.amqpQueue)
+    amqpConnection = AmqpConnection(host = config.amqpHost, connect = False)
+    amqpConnection.queue = config.amqpQueue
     amqpConnection.setPingReply("upsilon-custodian", "development", "db, amqp")
     amqpConnection.startHeartbeater()
     amqpConnection.bind('upsilon.custodian.requests');
