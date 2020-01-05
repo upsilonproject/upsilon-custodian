@@ -4,7 +4,7 @@ global config
 
 parser = configargparse.ArgParser(default_config_files=["/etc/upsilon-custodian/custodian.cfg"])
 parser.add("--dbUser")
-parser.add("--dbPass")
+parser.add("--dbPass", default = "")
 parser.add("--dbName")
 parser.add("--dbHost")
 parser.add("--amqpHost")

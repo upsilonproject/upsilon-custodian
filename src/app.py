@@ -36,16 +36,21 @@ def newAmqpConnection(config):
 
     amqpConnection = AmqpConnection(host = config.amqpHost, connect = False)
     amqpConnection.queue = config.amqpQueue
-    amqpConnection.setPingReply("upsilon-custodian", "development", "db, amqp")
+    amqpConnection.connect();
+    amqpConnection.setPingReply("upsilon-custodian", "development", "db, amqp, custodian")
     amqpConnection.startHeartbeater()
     amqpConnection.bind('upsilon.custodian.requests');
     amqpConnection.bind('upsilon.node.serviceresults');
     amqpConnection.bind('upsilon.node.heartbeats');
 
+    return amqpConnection
+
 
 def startConnections():
+    global amqpConnection
     amqpConnection = newAmqpConnection(config);
 
+    global mysqlConnection
     mysqlConnection = DatabaseConnection(MySQLdb.connect(host=config.dbHost, user=config.dbUser, passwd=config.dbPass, db = "upsilon", connect_timeout = 5, autocommit = True))
 
     messageHandler = MessageHandler(amqpConnection, mysqlConnection, config)
@@ -60,6 +65,8 @@ def startConnections():
 
 
 while True:
+    global amqpConnection
+
     try:
         startProm(config.promPort);
 
