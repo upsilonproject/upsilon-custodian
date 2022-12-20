@@ -4,3 +4,6 @@
 **/*.swo
 **/*.swp
 *.zip
+gen
+tmp
+/upsilon-custodian
