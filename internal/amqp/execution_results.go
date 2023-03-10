@@ -16,7 +16,7 @@ func exitCodeToKarma(exitCode int64) string {
 func ListenForExecutionResults() {
 	db := getDb()
 
-	amqp.Consume("ExecutionResult", func(d amqp.Delivery) {
+	amqp.ConsumeForever("ExecutionResult", func(d amqp.Delivery) {
 		d.Message.Ack(true)
 
 		execres := pb.ExecutionResult{}

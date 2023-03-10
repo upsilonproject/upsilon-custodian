@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/doug-martin/goqu/v9 v9.18.0 // indirect
 	github.com/streadway/amqp v1.0.0 // indirect
 	github.com/teris-io/shortid v0.0.0-20201117134242-e59966efd125 // indirect
 	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect

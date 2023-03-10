@@ -9,7 +9,7 @@ import (
 func ListenForHeartbeats() {
 	db = getDb();
 
-	amqp.Consume("Heartbeat", func(d amqp.Delivery) {
+	amqp.ConsumeForever("Heartbeat", func(d amqp.Delivery) {
 		d.Message.Ack(true)
 
 		hb := pb.Heartbeat{}

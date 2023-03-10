@@ -10,6 +10,7 @@ message Heartbeat {
 	int64 UnixTimestamp = 1;
 	string Hostname = 2;
 	string Version = 3;
+	string Type = 4;
 }
 
 message ExecutionResult {
@@ -48,6 +49,7 @@ message Event {
 }
 
 message ReportRequest {
+	bool includeGood = 1;
 }
 
 message ReportResponse {

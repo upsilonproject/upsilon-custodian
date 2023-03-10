@@ -3,6 +3,8 @@ package amqp;
 import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/doug-martin/goqu/v9"
+	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
 
 	log "github.com/sirupsen/logrus"
 
@@ -31,3 +33,6 @@ func getDb() *sql.DB {
 	return db;
 }
 
+func getGoqu() *goqu.Database {
+	return goqu.New("mysql", db)
+}
