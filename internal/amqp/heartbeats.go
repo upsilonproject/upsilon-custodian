@@ -18,7 +18,7 @@ func ListenForHeartbeats() {
 
 		log.Infof("Saving HEARTBEAT")
 
-		res, err := db.Query("INSERT INTO nodes (identifier) VALUES (?) ON DUPLICATE KEY UPDATE lastUpdated=now(), instanceApplicationVersion=?", hb.Hostname, hb.Version)
+		res, err := db.Query("INSERT INTO nodes (identifier) VALUES (?) ON DUPLICATE KEY UPDATE lastUpdated=now(), serviceType=?, instanceApplicationVersion=?", hb.Hostname, hb.Type, hb.Version)
 
 		if err != nil {
 			log.Warnf("Insert err: %v", err)

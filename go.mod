@@ -14,6 +14,7 @@ require (
 	github.com/streadway/amqp v1.0.0 // indirect
 	github.com/teris-io/shortid v0.0.0-20201117134242-e59966efd125 // indirect
 	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 replace github.com/upsilonproject/upsilon-gocommon => /home/xconspirisist/sandbox/Development/upsilon/upsilon-gocommon

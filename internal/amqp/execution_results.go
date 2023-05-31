@@ -29,6 +29,13 @@ func ListenForExecutionResults() {
 
 		if err != nil {
 			log.Warnf("Insert err: %v", err)
+
+		}
+
+		res, err = db.Query("INSERT INTO service_check_results (service, checked, output, metricProcessed) VALUES (?, now(), ?, 0)", execres.Name, execres.Stdout + execres.Stderr)
+
+		if err != nil {
+			log.Warnf("Insert err: %v", err)
 		}
 
 		res.Close()
