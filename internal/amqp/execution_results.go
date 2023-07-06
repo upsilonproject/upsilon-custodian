@@ -4,6 +4,7 @@ import (
 	"github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	pb "github.com/upsilonproject/upsilon-custodian/gen/amqpproto"
 	log "github.com/sirupsen/logrus"
+	db "github.com/upsilonproject/upsilon-custodian/internal/db"
 )
 
 func exitCodeToKarma(exitCode int64) string {
@@ -14,7 +15,7 @@ func exitCodeToKarma(exitCode int64) string {
 }
 
 func ListenForExecutionResults() {
-	db := getDb()
+	dbconn := db.GetDb()
 
 	amqp.ConsumeForever("ExecutionResult", func(d amqp.Delivery) {
 		d.Message.Ack(true)
@@ -25,14 +26,14 @@ func ListenForExecutionResults() {
 
 		log.Infof("Saving SERVICE_CHECK_RESULT")
 
-		res, err := db.Query("INSERT INTO services (identifier, description, consecutiveCount, node) VALUES (?, '', 0, ?) ON DUPLICATE KEY UPDATE lastUpdated = now(), lastChanged = now() , karma = ?, output =? ", execres.Name, execres.Hostname, exitCodeToKarma(execres.ExitCode), execres.Stdout + execres.Stderr)
+		res, err := dbconn.Query("INSERT INTO services (identifier, description, consecutiveCount, node) VALUES (?, '', 0, ?) ON DUPLICATE KEY UPDATE lastUpdated = now(), lastChanged = now() , karma = ?, output =? ", execres.Name, execres.Hostname, exitCodeToKarma(execres.ExitCode), execres.Stdout + execres.Stderr)
 
 		if err != nil {
 			log.Warnf("Insert err: %v", err)
 
 		}
 
-		res, err = db.Query("INSERT INTO service_check_results (service, checked, output, metricProcessed) VALUES (?, now(), ?, 0)", execres.Name, execres.Stdout + execres.Stderr)
+		res, err = dbconn.Query("INSERT INTO service_check_results (service, checked, output, metricProcessed) VALUES (?, now(), ?, 0)", execres.Name, execres.Stdout + execres.Stderr)
 
 		if err != nil {
 			log.Warnf("Insert err: %v", err)

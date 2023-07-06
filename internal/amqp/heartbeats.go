@@ -4,10 +4,11 @@ import (
 	"github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
 	pb "github.com/upsilonproject/upsilon-custodian/gen/amqpproto"
 	log "github.com/sirupsen/logrus"
+	db "github.com/upsilonproject/upsilon-custodian/internal/db"
 )
 
 func ListenForHeartbeats() {
-	db = getDb();
+	dbconn := db.GetDb();
 
 	amqp.ConsumeForever("Heartbeat", func(d amqp.Delivery) {
 		d.Message.Ack(true)
@@ -18,7 +19,7 @@ func ListenForHeartbeats() {
 
 		log.Infof("Saving HEARTBEAT")
 
-		res, err := db.Query("INSERT INTO nodes (identifier) VALUES (?) ON DUPLICATE KEY UPDATE lastUpdated=now(), serviceType=?, instanceApplicationVersion=?", hb.Hostname, hb.Type, hb.Version)
+		res, err := dbconn.Query("INSERT INTO nodes (identifier) VALUES (?) ON DUPLICATE KEY UPDATE lastUpdated=now(), serviceType=?, instanceApplicationVersion=?", hb.Hostname, hb.Type, hb.Version)
 
 		if err != nil {
 			log.Warnf("Insert err: %v", err)

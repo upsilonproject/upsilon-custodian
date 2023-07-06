@@ -15,7 +15,7 @@ var db *sql.DB;
 var dbLock sync.Mutex;
 
 
-func getDb() *sql.DB {
+func GetDb() *sql.DB {
 	dbLock.Lock();
 
 	if db == nil {
@@ -33,6 +33,6 @@ func getDb() *sql.DB {
 	return db;
 }
 
-func getGoqu() *goqu.Database {
+func GetGoqu() *goqu.Database {
 	return goqu.New("mysql", db)
 }

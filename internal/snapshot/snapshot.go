@@ -8,11 +8,14 @@ import (
 	"gopkg.in/yaml.v2"
 	"strings"
 	"net/http"
+	reports "github.com/upsilonproject/upsilon-custodian/internal/reports"
+	pb "github.com/upsilonproject/upsilon-custodian/gen/amqpproto"
 )
 
 type Snapshot struct {
 	Timestamp string
 	Metrics []Metric
+	Report *pb.ReportResponse
 }
 
 type Metric struct {
@@ -38,6 +41,7 @@ func RunForever() {
 func getSnapshot() *Snapshot {
 	ret := &Snapshot {
 		Timestamp: time.Now().Format(time.RFC850),
+		Report: reports.Get(true),
 	}
 
 	return ret
