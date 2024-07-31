@@ -29,6 +29,9 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.CONTAINER_TOKEN }}
-    
+
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag ghcr.io/upsilonproject/upsilon-custodian:$(date +%s)
+
+    - name: Push to ghcr
+      run: docker push ghcr.io/jamesread/uncomplicated-alert-receiver:latest
