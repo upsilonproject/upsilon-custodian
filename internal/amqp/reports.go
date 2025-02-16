@@ -2,7 +2,7 @@ package amqp
 
 import (
 	"github.com/upsilonproject/upsilon-gocommon/pkg/amqp"
-	pb "github.com/upsilonproject/upsilon-custodian/gen/amqpproto"
+	pb "github.com/upsilonproject/upsilon-gocommon/pkg/amqpproto"
 	log "github.com/sirupsen/logrus"
 	reports "github.com/upsilonproject/upsilon-custodian/internal/reports"
 )

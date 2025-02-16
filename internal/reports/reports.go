@@ -6,7 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"database/sql"
 	"github.com/doug-martin/goqu/v9"
-	pb "github.com/upsilonproject/upsilon-custodian/gen/amqpproto"
+	pb "github.com/upsilonproject/upsilon-gocommon/pkg/amqpproto"
 )
 
 func Get(includeGood bool) *pb.ReportResponse {

@@ -7,11 +7,11 @@ toolchain go1.22.9
 require (
 	github.com/doug-martin/goqu/v9 v9.19.0
 	github.com/fzipp/gocyclo v0.6.0
-	github.com/go-critic/go-critic v0.11.5
+	github.com/go-critic/go-critic v0.12.0
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/sirupsen/logrus v1.9.3
-	github.com/upsilonproject/upsilon-gocommon v0.0.0-20240801083712-834a8b1d5195
-	google.golang.org/protobuf v1.36.1
+	github.com/upsilonproject/upsilon-gocommon v0.0.0-20250216225835-71bff12ad35e
+	google.golang.org/protobuf v1.36.5
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -37,9 +37,9 @@ require (
 	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/teris-io/shortid v0.0.0-20220617161101-71ec9f2aa569 // indirect
 	golang.org/x/exp/typeparams v0.0.0-20241217172543-b2144cdd0a67 // indirect
-	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/sync v0.10.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/tools v0.28.0 // indirect
+	golang.org/x/mod v0.23.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/tools v0.30.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"net/http"
 	reports "github.com/upsilonproject/upsilon-custodian/internal/reports"
-	pb "github.com/upsilonproject/upsilon-custodian/gen/amqpproto"
+	pb "github.com/upsilonproject/upsilon-gocommon/pkg/amqpproto"
 )
 
 type Snapshot struct {
@@ -41,7 +41,7 @@ func RunForever() {
 func getSnapshot() *Snapshot {
 	ret := &Snapshot {
 		Timestamp: time.Now().Format(time.RFC850),
-		Report: reports.Get(true),
+		Report: reports.Get(false),
 	}
 
 	return ret
