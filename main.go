@@ -22,6 +22,7 @@ func main() {
 	go amqp.ListenForExecutionResults()
 	go amqp.ListenForHeartbeats()
 	go amqp.ListenForReportRequests()
+	go amqp.ListenForStartups()
 
 	go snapshot.RunForever()
 

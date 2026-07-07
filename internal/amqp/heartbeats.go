@@ -17,7 +17,10 @@ func ListenForHeartbeats() {
 
 		amqp.Decode(d.Message.Body, &hb)
 
-		log.Infof("Saving HEARTBEAT")
+		log.WithFields(log.Fields{
+			"type":     hb.Type,
+			"hostname": hb.Hostname,
+		}).Info("Saving HEARTBEAT")
 
 		res, err := dbconn.Query("INSERT INTO nodes (identifier) VALUES (?) ON DUPLICATE KEY UPDATE lastUpdated=now(), serviceType=?, instanceApplicationVersion=?", hb.Hostname, hb.Type, hb.Version)
 
