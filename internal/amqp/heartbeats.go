@@ -26,8 +26,8 @@ func ListenForHeartbeats() {
 
 		if err != nil {
 			log.Warnf("Insert err: %v", err)
+		} else {
+			res.Close()
 		}
-
-		res.Close()
 	})
 }
